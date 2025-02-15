@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import ModernSlider from "../Components/ModernSlider/ModernSlider";
 import { TimelineDemo } from "../Components/UI/Timeline";

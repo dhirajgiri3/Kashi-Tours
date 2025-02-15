@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useState, useEffect, memo } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Gravity, MatterBody } from 'Components/UI/Gravity';

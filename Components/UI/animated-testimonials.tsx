@@ -2,7 +2,7 @@
 
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import Image from "next/image";
+import Image, {StaticImageData} from "next/image";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { cn } from "lib/utils";
 
@@ -10,7 +10,7 @@ type Testimonial = {
     quote: string;
     name: string;
     designation: string;
-    src: string;
+    src: string | StaticImageData;
 };
 
 export const AnimatedTestimonials = ({
@@ -89,10 +89,10 @@ export const AnimatedTestimonials = ({
             <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
                 <div className="order-2 lg:order-1">
                     <div className="relative h-[400px] lg:h-[500px] w-full">
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence>
                             {testimonials.map((testimonial, index) => (
                                 <motion.div
-                                    key={testimonial.src}
+                                    key={index}
                                     drag={index === active ? "x" : false}
                                     onDragEnd={index === active ? handleDragEnd : undefined}
                                     dragConstraints={{ left: 0, right: 0 }}

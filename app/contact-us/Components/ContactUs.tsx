@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent, Suspense } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import PrimaryButton from "Components/UI/Buttons/PrimaryButton";
@@ -125,6 +125,8 @@ const ContactInfo = () => (
 );
 
 export default function ContactUs() {
+  // Initialize with null/empty values to avoid hydration mismatch
+  const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -141,6 +143,11 @@ export default function ContactUs() {
     budget: "",
     interests: [],
   });
+
+  // Add useEffect to handle client-side initialization
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -230,345 +237,351 @@ export default function ContactUs() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100">
       <Toaster position="top-center" />
-      {/* Hero Section */}
-      <Suspense fallback={heroLoader}>
-        <div className="relative h-[80vh] overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <DynamicWorldMap
-              dots={[
-                // Varanasi to London
-                {
-                  start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
-                  end: { lat: 51.5074, lng: -0.1278, label: "London" },
+      
+      {/* Only render client-specific content after hydration */}
+      {isClient && (
+        <>
+          {/* Hero Section */}
+          <Suspense fallback={heroLoader}>
+            <div className="relative h-[80vh] overflow-hidden">
+              <div className="absolute inset-0 z-0">
+                <DynamicWorldMap
+                  dots={[
+                    // Varanasi to London
+                    {
+                      start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
+                      end: { lat: 51.5074, lng: -0.1278, label: "London" },
 
-                },
-                // Varanasi to New York
-                {
-                  start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
-                  end: { lat: 40.7128, lng: -74.006, label: "New York" },
-                },
-                // Varanasi to Tokyo
-                {
-                  start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
-                  end: { lat: 35.6762, lng: 139.6503, label: "Tokyo" },
-                },
-                // Varanasi to Singapore
-                {
-                  start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
-                  end: { lat: 1.3521, lng: 103.8198, label: "Singapore" },
-                },
-                // Haridwar to Sydney
-                {
-                  start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
-                  end: { lat: -33.8688, lng: 151.2093, label: "Sydney" },
-                },
-                // Haridwar to Cairo
-                {
-                  start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
-                  end: { lat: 30.033, lng: 31.2336, label: "Cairo" },
-                },
-                // Haridwar to Cape Town
-                {
-                  start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
-                  end: { lat: -33.9249, lng: 18.4241, label: "Cape Town" },
-                },
-                //Ayodhya to Hong Kong
-                {
-                  start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
-                  end: { lat: 22.3193, lng: 114.1694, label: "Hong Kong" },
-                },
-                //Ayodhya to Moscow
-                {
-                  start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
-                  end: { lat: 55.7558, lng: 37.6176, label: "Moscow" },
-                },
-              ]}
-              lineColor="#DAA520"
-            />
-          </div>
-
-          <motion.div
-            {...fadeInUp}
-            className="relative z-20 h-full flex flex-col items-center justify-center px-4"
-          >
-            <div className="text-center space-y-6">
-        
-              <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-800">
-                Begin Your Sacred Journey
-              </h1>
-              <p className="text-base md:text-lg text-gray-600 max-w-xl mx-auto">
-                Embark on a transformative journey through ancient spiritual
-                lands
-              </p>
-              <div className="mt-8">
-                <a href="#contact-form">
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 bg-gradient-to-r from-primary to-primary/90 text-white rounded-full font-serif"
-                  >
-                    Start Your Pilgrimage
-                  </motion.button>
-                </a>
+                    },
+                    // Varanasi to New York
+                    {
+                      start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
+                      end: { lat: 40.7128, lng: -74.006, label: "New York" },
+                    },
+                    // Varanasi to Tokyo
+                    {
+                      start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
+                      end: { lat: 35.6762, lng: 139.6503, label: "Tokyo" },
+                    },
+                    // Varanasi to Singapore
+                    {
+                      start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
+                      end: { lat: 1.3521, lng: 103.8198, label: "Singapore" },
+                    },
+                    // Haridwar to Sydney
+                    {
+                      start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
+                      end: { lat: -33.8688, lng: 151.2093, label: "Sydney" },
+                    },
+                    // Haridwar to Cairo
+                    {
+                      start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
+                      end: { lat: 30.033, lng: 31.2336, label: "Cairo" },
+                    },
+                    // Haridwar to Cape Town
+                    {
+                      start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
+                      end: { lat: -33.9249, lng: 18.4241, label: "Cape Town" },
+                    },
+                    //Ayodhya to Hong Kong
+                    {
+                      start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
+                      end: { lat: 22.3193, lng: 114.1694, label: "Hong Kong" },
+                    },
+                    //Ayodhya to Moscow
+                    {
+                      start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
+                      end: { lat: 55.7558, lng: 37.6176, label: "Moscow" },
+                    },
+                  ]}
+                  lineColor="#DAA520"
+                />
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </Suspense>
-
-      {/* Form Section */}
-      <div
-        id="contact-form"
-        className="relative z-20 container mx-auto px-4 py-16 -mt-32"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contact Form */}
-          <motion.div
-            {...fadeInUp}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-primary/20 h-[95vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
-          >
-            <h2 className="text-2xl font-serif font-semibold mb-6 text-gray-800 flex items-center">
-              <span className="text-primary mr-2">॥</span> Book Your Sacred
-              Journey
-            </h2>
-
-            {/* ...existing form fields with updated styling... */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Apply the following classes to form inputs */}
-              {/* className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif" */}
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                {...fadeInUp}
+                className="relative z-20 h-full flex flex-col items-center justify-center px-4"
               >
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="firstName"
-                  type="text"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="email"
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="phone"
-                  type="tel"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="travelDate"
-                  type="date"
-                  placeholder="Travel Date"
-                  value={
-                    formData.travelDate
-                      ? formData.travelDate.toISOString().slice(0, 10)
-                      : ""
-                  }
-                  onChange={(e) =>
-                    handleDateChange(
-                      e.target.value ? new Date(e.target.value) : null
-                    )
-                  }
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="destination"
-                  type="text"
-                  placeholder="Travel Destination"
-                  value={formData.destination}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="city"
-                  type="text"
-                  placeholder="City"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                <motion.input
-                  whileFocus={{ scale: 1.02 }}
-                  id="peopleCount"
-                  type="number"
-                  placeholder="Number of People"
-                  min="1"
-                  value={formData.peopleCount}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                />
-                <motion.select
-                  whileFocus={{ scale: 1.02 }}
-                  id="vacationType"
-                  title="Select vacation type"
-                  value={formData.vacationType}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                  required
-                >
-                  <option value="">Select vacation type</option>
-                  <option value="adventure">Adventure</option>
-                  <option value="leisure">Leisure</option>
-                  <option value="cultural">Cultural</option>
-                  <option value="wildlife">Wildlife</option>
-                </motion.select>
-              </motion.div>
-
-              <motion.div className="space-y-4">
-                <label className="block text-gray-700 font-serif">Preferred Contact Method</label>
-                <div className="flex gap-4">
-                  {['email', 'phone', 'whatsapp'].map((method) => (
+                <div className="text-center space-y-6">
+            
+                  <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-800">
+                    Begin Your Sacred Journey
+                  </h1>
+                  <p className="text-base md:text-lg text-gray-600 max-w-xl mx-auto">
+                    Embark on a transformative journey through ancient spiritual
+                    lands
+                  </p>
+                  <div className="mt-8">
+                    <a href="#contact-form">
                     <motion.button
-                      key={method}
-                      type="button"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setFormData(prev => ({...prev, preferredContactMethod: method as any }))}
-                      className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                        formData.preferredContactMethod === method
-                          ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {method === 'whatsapp' && <BsWhatsapp />}
-                      {method.charAt(0).toUpperCase() + method.slice(1)}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div className="space-y-4">
-                <label className="block text-gray-700 font-serif">Areas of Interest</label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {interests.map((interest) => (
-                    <motion.button
-                      key={interest}
-                      type="button"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleInterestToggle(interest)}
-                      className={`p-3 rounded-lg text-sm text-center transition-colors ${
-                        selectedInterests.includes(interest)
-                          ? 'bg-primary/20 text-primary border-2 border-primary'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {interest}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.textarea
-                whileFocus={{ scale: 1.02 }}
-                id="message"
-                placeholder="Tell us about your spiritual journey expectations..."
-                value={formData.message}
-                onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif h-32 resize-none"
-              />
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full mt-8 bg-gradient-to-r from-primary to-primary/90 text-white py-4 rounded-full transition-all duration-300 flex items-center justify-center font-serif text-lg"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Submitting...</span>
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-4 bg-gradient-to-r from-primary to-primary/90 text-white rounded-full font-serif"
+                      >
+                        Start Your Pilgrimage
+                      </motion.button>
+                    </a>
                   </div>
-                ) : (
-                  <>
-                    <span className="mr-2">Begin Your Sacred Journey</span>
-                    <FiSend className="text-xl" />
-                  </>
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
+                </div>
+              </motion.div>
+            </div>
+          </Suspense>
 
-          {/* Contact Info */}
-            <motion.div 
-            {...fadeInUp} 
-            className="hidden lg:block h-[95vh] overflow-y-auto rounded-xl scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
-            style={{
-              scrollbarWidth: 'thin',
-              msOverflowStyle: 'none'
-            }}
-            >
-            <ContactInfo />
-            </motion.div>
-        </div>
-      </div>
+          {/* Form Section */}
+          <div
+            id="contact-form"
+            className="relative z-20 container mx-auto px-4 py-16 -mt-32"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Contact Form */}
+              <motion.div
+                {...fadeInUp}
+                className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-primary/20 h-[95vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
+              >
+                <h2 className="text-2xl font-serif font-semibold mb-6 text-gray-800 flex items-center">
+                  <span className="text-primary mr-2">॥</span> Book Your Sacred
+                  Journey
+                </h2>
+
+                {/* ...existing form fields with updated styling... */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Apply the following classes to form inputs */}
+                  {/* className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif" */}
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="firstName"
+                      type="text"
+                      placeholder="First Name"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="lastName"
+                      type="text"
+                      placeholder="Last Name"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="email"
+                      type="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="phone"
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                  >
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="travelDate"
+                      type="date"
+                      placeholder="Travel Date"
+                      value={
+                        formData.travelDate
+                          ? formData.travelDate.toISOString().slice(0, 10)
+                          : ""
+                      }
+                      onChange={(e) =>
+                        handleDateChange(
+                          e.target.value ? new Date(e.target.value) : null
+                        )
+                      }
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="destination"
+                      type="text"
+                      placeholder="Travel Destination"
+                      value={formData.destination}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="city"
+                      type="text"
+                      placeholder="City"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      id="peopleCount"
+                      type="number"
+                      placeholder="Number of People"
+                      min="1"
+                      value={formData.peopleCount}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    />
+                    <motion.select
+                      whileFocus={{ scale: 1.02 }}
+                      id="vacationType"
+                      title="Select vacation type"
+                      value={formData.vacationType}
+                      onChange={handleChange}
+                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                      required
+                    >
+                      <option value="">Select vacation type</option>
+                      <option value="adventure">Adventure</option>
+                      <option value="leisure">Leisure</option>
+                      <option value="cultural">Cultural</option>
+                      <option value="wildlife">Wildlife</option>
+                    </motion.select>
+                  </motion.div>
+
+                  <motion.div className="space-y-4">
+                    <label className="block text-gray-700 font-serif">Preferred Contact Method</label>
+                    <div className="flex gap-4">
+                      {['email', 'phone', 'whatsapp'].map((method) => (
+                        <motion.button
+                          key={method}
+                          type="button"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setFormData(prev => ({...prev, preferredContactMethod: method as any }))}
+                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
+                            formData.preferredContactMethod === method
+                              ? 'bg-primary text-white'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {method === 'whatsapp' && <BsWhatsapp />}
+                          {method.charAt(0).toUpperCase() + method.slice(1)}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  <motion.div className="space-y-4">
+                    <label className="block text-gray-700 font-serif">Areas of Interest</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {interests.map((interest) => (
+                        <motion.button
+                          key={interest}
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => handleInterestToggle(interest)}
+                          className={`p-3 rounded-lg text-sm text-center transition-colors ${
+                            selectedInterests.includes(interest)
+                              ? 'bg-primary/20 text-primary border-2 border-primary'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {interest}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  <motion.textarea
+                    whileFocus={{ scale: 1.02 }}
+                    id="message"
+                    placeholder="Tell us about your spiritual journey expectations..."
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
+                    className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif h-32 resize-none"
+                  />
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full mt-8 bg-gradient-to-r from-primary to-primary/90 text-white py-4 rounded-full transition-all duration-300 flex items-center justify-center font-serif text-lg"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Submitting...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="mr-2">Begin Your Sacred Journey</span>
+                        <FiSend className="text-xl" />
+                      </>
+                    )}
+                  </motion.button>
+                </form>
+              </motion.div>
+
+              {/* Contact Info */}
+                <motion.div 
+                {...fadeInUp} 
+                className="hidden lg:block h-[95vh] overflow-y-auto rounded-xl scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
+                style={{
+                  scrollbarWidth: 'thin',
+                  msOverflowStyle: 'none'
+                }}
+                >
+                <ContactInfo />
+                </motion.div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

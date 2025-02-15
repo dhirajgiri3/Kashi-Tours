@@ -1,14 +1,16 @@
 "use client";
 
 import React from "react";
-import { AnimatedTestimonials } from "Components/UI/animated-testimonials";
+import { AnimatedTestimonials } from "../UI/animated-testimonials";
 import { motion } from "framer-motion";
+import woman from "../../public/Images/Traditional-2.jpeg";
+import { StaticImageData } from "next/image";
 
 interface Testimonial {
     quote: string;
     name: string;
     designation: string;
-    src: string;
+    src: string | StaticImageData;
 }
 
 const Testimonials: React.FC = () => {
@@ -19,7 +21,7 @@ const Testimonials: React.FC = () => {
             name: "Anita Sharma",
             designation: "New Delhi",
             src:
-                "https://www.lummi.ai/api/render/image/e70716c4-8984-4644-8e3f-d6d07d7379d0?token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImU3MDcxNmM0LTg5ODQtNDY0NC04ZTNmLWQ2ZDA3ZDczNzlkMCIsImRvd25sb2FkU2l6ZSI6Im1lZGl1bSIsInJlbmRlclNwZWNzIjp7ImVmZmVjdHMiOnsicmVmcmFtZSI6e319fSwic2hvdWxkQXV0b0Rvd25sb2FkIjpmYWxzZSwianRpIjoiYlEwUHhJeHNQWnlpRG80YlBiX3RLIiwiaWF0IjoxNzM5MTI4MTU1LCJleHAiOjE3MzkxMjgyMTV9.mxytcT7JlYT6nf-7NyfPnczYoxEN64pkrW7Ll6ymyrs",
+                woman,
         },
         {
             quote:

@@ -1,8 +1,5 @@
-// Code: Timeline Component with Image Stretching on Y-Axis in React and Next.js -translate-y-full
-
-// ./UI/Timeline.tsx
-
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
