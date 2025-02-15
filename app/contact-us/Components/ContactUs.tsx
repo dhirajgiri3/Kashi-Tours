@@ -6,12 +6,12 @@ import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import PrimaryButton from "Components/UI/Buttons/PrimaryButton";
 import Image from "next/image";
 import Loader from "Components/UI/Loader";
-import { Toaster, toast } from 'react-hot-toast';
-import { BsWhatsapp } from 'react-icons/bs';
-import { motion, AnimatePresence } from "framer-motion";
-import { useForm, ValidationError } from '@formspree/react';
-import { useInView } from 'react-intersection-observer';
-import ReactConfetti from 'react-confetti';
+import { Toaster, toast } from "react-hot-toast";
+import { BsWhatsapp } from "react-icons/bs";
+import { motion } from "framer-motion";
+import { useForm, ValidationError } from "@formspree/react";
+import { useInView } from "react-intersection-observer";
+import ReactConfetti from "react-confetti";
 
 // Load WorldMap with updated fancy loader
 const DynamicWorldMap = dynamic(
@@ -23,7 +23,6 @@ const DynamicWorldMap = dynamic(
   }
 );
 
-// Separate form types to avoid re-renders
 interface FormData {
   firstName: string;
   lastName: string;
@@ -36,12 +35,21 @@ interface FormData {
   peopleCount: string;
   vacationType: string;
   message: string;
-  preferredContactMethod: 'email' | 'phone' | 'whatsapp';
+  preferredContactMethod: "email" | "phone" | "whatsapp";
   budget: string;
   interests: string[];
 }
 
-// Extract contact info to separate component to reduce re-renders
+interface WindowSize {
+  width: number;
+  height: number;
+}
+
+interface ToastProps {
+  visible: boolean;
+}
+
+// Separate component for contact information
 const ContactInfo = () => (
   <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-primary/20 shadow-xl space-y-8">
     <div>
@@ -127,11 +135,6 @@ const ContactInfo = () => (
   </div>
 );
 
-interface WindowSize {
-  width: number;
-  height: number;
-}
-
 export default function ContactUs() {
   const [state, handleFormspreeSubmit] = useForm("xdkawpeg");
   // Initialize with null/empty values to avoid hydration mismatch
@@ -148,7 +151,7 @@ export default function ContactUs() {
     peopleCount: "",
     vacationType: "",
     message: "",
-    preferredContactMethod: 'email',
+    preferredContactMethod: "email",
     budget: "",
     interests: [],
   });
@@ -159,13 +162,12 @@ export default function ContactUs() {
   }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: 0,
     height: 0,
   });
-  
+
   const { ref: formRef, inView: formInView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -179,16 +181,20 @@ export default function ContactUs() {
         height: window.innerHeight,
       });
     };
-    
+
     handleResize();
-    window.addEventListener('resize', handleResize);
-    
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   const interests = [
-    "Temple Tours", "Spiritual Retreats", "Meditation Sessions",
-    "Cultural Programs", "Holy River Ceremonies", "Ayurvedic Experiences"
+    "Temple Tours",
+    "Spiritual Retreats",
+    "Meditation Sessions",
+    "Cultural Programs",
+    "Holy River Ceremonies",
+    "Ayurvedic Experiences",
   ];
 
   const validateForm = (data: FormData): boolean => {
@@ -204,11 +210,11 @@ export default function ContactUs() {
   };
 
   const handleInterestToggle = (interest: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
+        ? prev.interests.filter((i) => i !== interest)
+        : [...prev.interests, interest],
     }));
   };
 
@@ -238,75 +244,79 @@ export default function ContactUs() {
       return;
     }
 
-    try {
-      await handleFormspreeSubmit(e);
-      
-      if (state.succeeded) {
-        // Show confetti
-        setShowConfetti(true);
-        
-        // Success animation and message
-        interface ToastContentProps {
-          visible: boolean;
-        }
-
-        interface CustomToastProps {
-          t: ToastContentProps;
-        }
-
-                toast.custom((t: CustomToastProps['t']) => (
-                  <div className={`${
-                    t.visible ? 'animate-enter' : 'animate-leave'
-                  } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
-                    <div className="flex-1 w-0 p-4">
-                      <div className="flex items-start">
-                        <div className="ml-3 flex-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            Thank you for reaching out!
-                          </p>
-                          <p className="mt-1 text-sm text-gray-500">
-                            We'll get back to you soon on your sacred journey.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ), { duration: 4000 });
-
-        // WhatsApp integration
-        if (formData.preferredContactMethod === 'whatsapp') {
-          const message = `Hello, I'm interested in booking a sacred journey!\n\nName: ${formData.firstName} ${formData.lastName}\nDestination: ${formData.destination}\nTravel Date: ${formData.travelDate}\nPeople: ${formData.peopleCount}\nInterests: ${formData.interests.join(', ')}`;
-          window.open(`https://wa.me/911234567890?text=${encodeURIComponent(message)}`);
-        }
-        
-        // Reset form with animation
-        setTimeout(() => {
-          setFormData({
-            firstName: "",
-            lastName: "",
-            city: "",
-            email: "",
-            phone: "",
-            whatsapp: "",
-            destination: "",
-            travelDate: null,
-            peopleCount: "",
-            vacationType: "",
-            message: "",
-            preferredContactMethod: 'email',
-            budget: "",
-            interests: [],
-          });
-          setSelectedInterests([]);
-          setShowConfetti(false);
-        }, 4000);
-      }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Call Formspree submission. Do not capture a result here as it returns void.
+    await handleFormspreeSubmit(e);
+    setIsSubmitting(false);
   };
+
+  // Listen for changes on the Formspree state to handle success or errors
+  useEffect(() => {
+    if (state.succeeded) {
+      setShowConfetti(true);
+      toast.custom((t: ToastProps) => (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } max-w-md w-full bg-white shadow-lg rounded-xl pointer-events-auto flex ring-1 ring-black ring-opacity-5 p-6`}
+        >
+          {/* You can customize your toast content here */}
+          <div className="flex flex-col">
+            <span className="font-semibold text-gray-900">
+              Successfully submitted!
+            </span>
+            <span className="text-gray-500 text-sm">
+              Your sacred journey request has been received.
+            </span>
+          </div>
+        </motion.div>
+      ), { duration: 5000 });
+
+      // Reset form and confetti handling...
+      setTimeout(() => {
+        setFormData({
+          firstName: "",
+          lastName: "",
+          city: "",
+          email: "",
+          phone: "",
+          whatsapp: "",
+          destination: "",
+          travelDate: null,
+          peopleCount: "",
+          vacationType: "",
+          message: "",
+          preferredContactMethod: "email",
+          budget: "",
+          interests: [],
+        });
+        setTimeout(() => setShowConfetti(false), 4000);
+      }, 1000);
+    } else if (state.errors && Object.keys(state.errors).length > 0) {
+      toast.custom((t: ToastProps) => (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } max-w-md w-full bg-white shadow-lg rounded-xl pointer-events-auto flex ring-1 ring-red-100 p-6`}
+        >
+          {/* You can customize your error toast content here */}
+          <div className="flex flex-col">
+            <span className="font-semibold text-red-600">
+              Submission failed!
+            </span>
+            <span className="text-gray-500 text-sm">
+              Please try again.
+            </span>
+          </div>
+        </motion.div>
+      ), { duration: 4000 });
+    }
+  }, [state.succeeded, state.errors]);
 
   // Updated fadeInUp for smoother overall UI animation
   const fadeInUp = {
@@ -339,7 +349,6 @@ export default function ContactUs() {
                     {
                       start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
                       end: { lat: 51.5074, lng: -0.1278, label: "London" },
-
                     },
                     // Varanasi to New York
                     {
@@ -371,12 +380,12 @@ export default function ContactUs() {
                       start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
                       end: { lat: -33.9249, lng: 18.4241, label: "Cape Town" },
                     },
-                    //Ayodhya to Hong Kong
+                    // Ayodhya to Hong Kong
                     {
                       start: { lat: 29.9457, lng: 78.1642, label: "Haridwar" },
                       end: { lat: 22.3193, lng: 114.1694, label: "Hong Kong" },
                     },
-                    //Ayodhya to Moscow
+                    // Ayodhya to Moscow
                     {
                       start: { lat: 25.3176, lng: 82.9739, label: "Varanasi" },
                       end: { lat: 55.7558, lng: 37.6176, label: "Moscow" },
@@ -391,17 +400,15 @@ export default function ContactUs() {
                 className="relative z-20 h-full flex flex-col items-center justify-center px-4"
               >
                 <div className="text-center space-y-6">
-            
                   <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-800">
                     Begin Your Sacred Journey
                   </h1>
                   <p className="text-base md:text-lg text-gray-600 max-w-xl mx-auto">
-                    Embark on a transformative journey through ancient spiritual
-                    lands
+                    Embark on a transformative journey through ancient spiritual lands
                   </p>
                   <div className="mt-8">
                     <a href="#contact-form">
-                    <motion.button
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className="px-8 py-4 bg-gradient-to-r from-primary to-primary/90 text-white rounded-full font-serif"
@@ -416,10 +423,7 @@ export default function ContactUs() {
           </Suspense>
 
           {/* Form Section */}
-          <div
-            id="contact-form"
-            className="relative z-20 container mx-auto px-4 py-16 -mt-32"
-          >
+          <div id="contact-form" className="relative z-20 container mx-auto px-4 py-16 -mt-32">
             {showConfetti && (
               <ReactConfetti
                 width={windowSize.width}
@@ -427,11 +431,31 @@ export default function ContactUs() {
                 recycle={false}
                 numberOfPieces={500}
                 gravity={0.2}
-                colors={['#DAA520', '#FFD700', '#FFA500', '#FF8C00']}
+                colors={[
+                  "#DAA520",
+                  "#FFD700",
+                  "#FFA500",
+                  "#FF8C00",
+                  "#FFB6C1",
+                  "#FFC0CB",
+                ]}
                 onConfettiComplete={() => setShowConfetti(false)}
+                tweenDuration={4000}
+                drawShape={(ctx) => {
+                  ctx.beginPath();
+                  for (let i = 0; i < 22; i++) {
+                    const angle = 0.35 * i;
+                    const x = (0.2 + 1.5 * angle) * Math.cos(angle);
+                    const y = (0.2 + 1.5 * angle) * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                  }
+                  ctx.fill();
+                  ctx.closePath();
+                }}
               />
             )}
-            
+
             <motion.div
               ref={formRef}
               initial={{ opacity: 0, y: 50 }}
@@ -445,15 +469,10 @@ export default function ContactUs() {
                 className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-primary/20 h-[95vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
               >
                 <h2 className="text-2xl font-serif font-semibold mb-6 text-gray-800 flex items-center">
-                  <span className="text-primary mr-2">॥</span> Book Your Sacred
-                  Journey
+                  <span className="text-primary mr-2">॥</span> Book Your Sacred Journey
                 </h2>
 
-                {/* ...existing form fields with updated styling... */}
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Apply the following classes to form inputs */}
-                  {/* className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif" */}
-
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -632,22 +651,29 @@ export default function ContactUs() {
                   </motion.div>
 
                   <motion.div className="space-y-4">
-                    <label className="block text-gray-700 font-serif">Preferred Contact Method</label>
+                    <label className="block text-gray-700 font-serif">
+                      Preferred Contact Method
+                    </label>
                     <div className="flex gap-4">
-                      {['email', 'phone', 'whatsapp'].map((method) => (
+                      {["email", "phone", "whatsapp"].map((method) => (
                         <motion.button
                           key={method}
                           type="button"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setFormData(prev => ({...prev, preferredContactMethod: method as any }))}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              preferredContactMethod: method as "email" | "phone" | "whatsapp",
+                            }))
+                          }
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
                             formData.preferredContactMethod === method
-                              ? 'bg-primary text-white'
-                              : 'bg-gray-100 text-gray-700'
+                              ? "bg-primary text-white"
+                              : "bg-gray-100 text-gray-700"
                           }`}
                         >
-                          {method === 'whatsapp' && <BsWhatsapp />}
+                          {method === "whatsapp" && <BsWhatsapp />}
                           {method.charAt(0).toUpperCase() + method.slice(1)}
                         </motion.button>
                       ))}
@@ -666,8 +692,8 @@ export default function ContactUs() {
                           onClick={() => handleInterestToggle(interest)}
                           className={`p-3 rounded-lg text-sm text-center transition-colors ${
                             formData.interests.includes(interest)
-                              ? 'bg-primary/20 text-primary border-2 border-primary'
-                              : 'bg-gray-100 text-gray-700'
+                              ? "bg-primary/20 text-primary border-2 border-primary"
+                              : "bg-gray-100 text-gray-700"
                           }`}
                         >
                           {interest}
@@ -677,7 +703,7 @@ export default function ContactUs() {
                     <input
                       type="hidden"
                       name="interests"
-                      value={formData.interests.join(', ')}
+                      value={formData.interests.join(", ")}
                     />
                   </motion.div>
 
@@ -687,7 +713,9 @@ export default function ContactUs() {
                     name="message"
                     placeholder="Tell us about your spiritual journey expectations..."
                     value={formData.message}
-                    onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, message: e.target.value }))
+                    }
                     className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif h-32 resize-none"
                   />
                   <ValidationError prefix="Message" field="message" errors={state.errors} />
@@ -698,13 +726,13 @@ export default function ContactUs() {
                     type="submit"
                     disabled={state.submitting}
                     className={`w-full mt-8 py-4 rounded-full font-serif text-lg relative overflow-hidden ${
-                      state.submitting ? 'bg-primary/70' : 'bg-gradient-to-r from-primary to-primary/90'
+                      state.submitting ? "bg-primary/70" : "bg-gradient-to-r from-primary to-primary/90"
                     }`}
                   >
                     <motion.div
                       initial={false}
                       animate={{
-                        x: state.submitting ? '100%' : '0%',
+                        x: state.submitting ? "100%" : "0%",
                       }}
                       transition={{ duration: 0.5 }}
                       className="absolute inset-0 bg-white/20"
@@ -727,16 +755,16 @@ export default function ContactUs() {
               </motion.div>
 
               {/* Contact Info */}
-                <motion.div 
-                {...fadeInUp} 
+              <motion.div
+                {...fadeInUp}
                 className="hidden lg:block h-[95vh] overflow-y-auto rounded-xl scrollbar-thin scrollbar-thumb-primary scrollbar-track-primary/30"
                 style={{
-                  scrollbarWidth: 'thin',
-                  msOverflowStyle: 'none'
+                  scrollbarWidth: "thin",
+                  msOverflowStyle: "none",
                 }}
-                >
+              >
                 <ContactInfo />
-                </motion.div>
+              </motion.div>
             </motion.div>
           </div>
         </>
