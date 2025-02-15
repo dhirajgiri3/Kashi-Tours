@@ -260,7 +260,7 @@ export default function ContactUs() {
           exit={{ opacity: 0, y: 20 }}
           className={`${
             t.visible ? "animate-enter" : "animate-leave"
-          } max-w-md w-full bg-white shadow-lg rounded-xl pointer-events-auto flex ring-1 ring-black ring-opacity-5 p-6`}
+          } max-w-md w-full bg-white shadow-sm rounded-xl pointer-events-auto flex ring-1 ring-black ring-opacity-5 p-6`}
         >
           {/* You can customize your toast content here */}
           <div className="flex flex-col">
@@ -302,7 +302,7 @@ export default function ContactUs() {
           exit={{ opacity: 0, y: 20 }}
           className={`${
             t.visible ? "animate-enter" : "animate-leave"
-          } max-w-md w-full bg-white shadow-lg rounded-xl pointer-events-auto flex ring-1 ring-red-100 p-6`}
+          } max-w-md w-full bg-white shadow-sm rounded-xl pointer-events-auto flex ring-1 ring-red-100 p-6`}
         >
           {/* You can customize your error toast content here */}
           <div className="flex flex-col">
