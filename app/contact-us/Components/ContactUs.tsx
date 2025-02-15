@@ -9,6 +9,7 @@ import Loader from "Components/UI/Loader";
 import { Toaster, toast } from 'react-hot-toast';
 import { BsWhatsapp } from 'react-icons/bs';
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm, ValidationError } from '@formspree/react';
 
 // Load WorldMap with updated fancy loader
 const DynamicWorldMap = dynamic(
@@ -125,6 +126,7 @@ const ContactInfo = () => (
 );
 
 export default function ContactUs() {
+  const [state, handleFormspreeSubmit] = useForm("xdkawpeg");
   // Initialize with null/empty values to avoid hydration mismatch
   const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -204,14 +206,35 @@ export default function ContactUs() {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success("Thank you! We'll contact you soon.");
+      await handleFormspreeSubmit(e);
       
-      // WhatsApp integration
-      if (formData.preferredContactMethod === 'whatsapp') {
-        const message = `Hello, I'm interested in booking a sacred journey!\n\nName: ${formData.firstName} ${formData.lastName}\nDestination: ${formData.destination}\nTravel Date: ${formData.travelDate}\nPeople: ${formData.peopleCount}`;
-        window.open(`https://wa.me/911234567890?text=${encodeURIComponent(message)}`);
+      if (state.succeeded) {
+        toast.success("Thank you! We'll contact you soon.");
+        
+        // WhatsApp integration
+        if (formData.preferredContactMethod === 'whatsapp') {
+          const message = `Hello, I'm interested in booking a sacred journey!\n\nName: ${formData.firstName} ${formData.lastName}\nDestination: ${formData.destination}\nTravel Date: ${formData.travelDate}\nPeople: ${formData.peopleCount}`;
+          window.open(`https://wa.me/911234567890?text=${encodeURIComponent(message)}`);
+        }
+        
+        // Reset form
+        setFormData({
+          firstName: "",
+          lastName: "",
+          city: "",
+          email: "",
+          phone: "",
+          whatsapp: "",
+          destination: "",
+          travelDate: null,
+          peopleCount: "",
+          vacationType: "",
+          message: "",
+          preferredContactMethod: 'email',
+          budget: "",
+          interests: [],
+        });
+        setSelectedInterests([]);
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -354,26 +377,34 @@ export default function ContactUs() {
                     transition={{ delay: 0.1, duration: 0.5 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="firstName"
-                      type="text"
-                      placeholder="First Name"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="lastName"
-                      type="text"
-                      placeholder="Last Name"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="First Name" field="firstName" errors={state.errors} />
+                    </div>
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="Last Name" field="lastName" errors={state.errors} />
+                    </div>
                   </motion.div>
 
                   <motion.div
@@ -382,26 +413,34 @@ export default function ContactUs() {
                     transition={{ delay: 0.2, duration: 0.5 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="phone"
-                      type="tel"
-                      placeholder="Phone Number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="Email" field="email" errors={state.errors} />
+                    </div>
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="Phone" field="phone" errors={state.errors} />
+                    </div>
                   </motion.div>
 
                   <motion.div
@@ -412,6 +451,7 @@ export default function ContactUs() {
                     <motion.input
                       whileFocus={{ scale: 1.02 }}
                       id="travelDate"
+                      name="travelDate"
                       type="date"
                       placeholder="Travel Date"
                       value={
@@ -427,6 +467,7 @@ export default function ContactUs() {
                       className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
                       required
                     />
+                    <ValidationError prefix="Travel Date" field="travelDate" errors={state.errors} />
                   </motion.div>
 
                   <motion.div
@@ -435,26 +476,34 @@ export default function ContactUs() {
                     transition={{ delay: 0.4, duration: 0.5 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="destination"
-                      type="text"
-                      placeholder="Travel Destination"
-                      value={formData.destination}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="city"
-                      type="text"
-                      placeholder="City"
-                      value={formData.city}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="destination"
+                        name="destination"
+                        type="text"
+                        placeholder="Travel Destination"
+                        value={formData.destination}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="Destination" field="destination" errors={state.errors} />
+                    </div>
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="city"
+                        name="city"
+                        type="text"
+                        placeholder="City"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="City" field="city" errors={state.errors} />
+                    </div>
                   </motion.div>
 
                   <motion.div
@@ -463,32 +512,40 @@ export default function ContactUs() {
                     transition={{ delay: 0.5, duration: 0.5 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
-                    <motion.input
-                      whileFocus={{ scale: 1.02 }}
-                      id="peopleCount"
-                      type="number"
-                      placeholder="Number of People"
-                      min="1"
-                      value={formData.peopleCount}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    />
-                    <motion.select
-                      whileFocus={{ scale: 1.02 }}
-                      id="vacationType"
-                      title="Select vacation type"
-                      value={formData.vacationType}
-                      onChange={handleChange}
-                      className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
-                      required
-                    >
-                      <option value="">Select vacation type</option>
-                      <option value="adventure">Adventure</option>
-                      <option value="leisure">Leisure</option>
-                      <option value="cultural">Cultural</option>
-                      <option value="wildlife">Wildlife</option>
-                    </motion.select>
+                    <div>
+                      <motion.input
+                        whileFocus={{ scale: 1.02 }}
+                        id="peopleCount"
+                        name="peopleCount"
+                        type="number"
+                        placeholder="Number of People"
+                        min="1"
+                        value={formData.peopleCount}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      />
+                      <ValidationError prefix="People Count" field="peopleCount" errors={state.errors} />
+                    </div>
+                    <div>
+                      <motion.select
+                        whileFocus={{ scale: 1.02 }}
+                        id="vacationType"
+                        name="vacationType"
+                        title="Select vacation type"
+                        value={formData.vacationType}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif"
+                        required
+                      >
+                        <option value="">Select vacation type</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="leisure">Leisure</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="wildlife">Wildlife</option>
+                      </motion.select>
+                      <ValidationError prefix="Vacation Type" field="vacationType" errors={state.errors} />
+                    </div>
                   </motion.div>
 
                   <motion.div className="space-y-4">
@@ -539,20 +596,22 @@ export default function ContactUs() {
                   <motion.textarea
                     whileFocus={{ scale: 1.02 }}
                     id="message"
+                    name="message"
                     placeholder="Tell us about your spiritual journey expectations..."
                     value={formData.message}
                     onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
                     className="w-full px-5 py-3 border border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition duration-200 font-serif h-32 resize-none"
                   />
+                  <ValidationError prefix="Message" field="message" errors={state.errors} />
 
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={state.submitting}
                     className="w-full mt-8 bg-gradient-to-r from-primary to-primary/90 text-white py-4 rounded-full transition-all duration-300 flex items-center justify-center font-serif text-lg"
                   >
-                    {isSubmitting ? (
+                    {state.submitting ? (
                       <div className="flex items-center gap-2">
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Submitting...</span>
