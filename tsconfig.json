@@ -1,0 +1,38 @@
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node", // Changed from 'bundler' to 'node' for better compatibility
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".", // Ensures baseUrl is set for path aliases
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/shaders/*": ["./src/shaders/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "Components/UI/3D/ModelViewer.jsx",
+    "src/shaders/**/*.glsl"
+  ],
+  "exclude": ["node_modules"]
+}
