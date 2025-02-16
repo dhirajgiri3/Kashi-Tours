@@ -77,10 +77,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   return (
     <div className="w-full bg-white font-sans md:px-10" ref={containerRef}>
       <div className="max-w-7xl mx-auto pt-20 pb-4 px-4 md:px-8 lg:px-10">
-        <h1 className="text-4xl md:text-6xl mb-4 font-bold text-black max-w-4xl">
+        <h1 className="text-4xl md:text-5xl mb-4 font-bold text-black max-w-4xl">
           Our Services
         </h1>
-        <p className="text-neutral-500 text-base max-w-sm">
+        <p className="text-neutral-500 text-sm max-w-sm">
           We offer a range of services to make your pilgrimage as comfortable as
           possible.
         </p>
@@ -104,7 +104,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <h3 className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-gray-700">
+              <h3 className="hidden md:block text-xl md:pl-20 md:text-4xl font-bold text-gray-700">
                 {item.title}
               </h3>
             </div>
