@@ -93,7 +93,7 @@ const PackageCard: React.FC<{ pkg: PackageCardType; index: number }> = ({ pkg, i
             </p>
           </div>
           <Link
-            href="/contact"
+            href="/contact-us"
             className="package-cta group mt-6"
           >
             <span>View Details</span>

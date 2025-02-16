@@ -234,7 +234,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {exploreLinks.map((item) => (
                 <li key={item}>
-                  <Link href="#" className="group relative block overflow-hidden rounded-lg">
+                  <Link href="/contact-us" className="group relative block overflow-hidden rounded-lg">
                     <span className="relative inline-block w-full px-4 py-2 text-sm text-gray-600 transition-all duration-300 group-hover:text-black">
                       {item}
                       <span className="absolute inset-0 w-1 bg-gold/30 left-0 top-0 h-full transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out" />

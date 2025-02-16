@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowRight, MapPin, Clock, ChevronRight } from "lucide-react";
 import PrimaryButton from "Components/UI/Buttons/PrimaryButton";
+import Link from "next/link";
 
 interface Tour {
   title: string;
@@ -318,7 +319,9 @@ const RitualTours: React.FC = () => {
         </motion.div>
         <div className="space-y-24 md:space-y-32">
           {TOURS_DATA.map((tour, index) => (
-            <ParallaxCard key={tour.title} tour={tour} index={index} />
+            <Link href="/contact-us" key={tour.title}>
+              <ParallaxCard tour={tour} index={index} />
+            </Link>
           ))}
         </div>
       </div>
