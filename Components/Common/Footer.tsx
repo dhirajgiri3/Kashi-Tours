@@ -272,7 +272,7 @@ const Footer = () => {
               {socialLinks.map((social, idx) => (
                 <Link
                   key={idx}
-                  href="#"
+                  href="/"
                   aria-label={social.label}
                   className="group relative p-3.5 rounded-2xl transition-all duration-300 hover:-translate-y-[1px]"
                 >
@@ -302,7 +302,7 @@ const Footer = () => {
               {legalLinks.map((item) => (
                 <Link
                   key={item}
-                  href="#"
+                  href="/"
                   className="relative group hover:text-black transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {item}
